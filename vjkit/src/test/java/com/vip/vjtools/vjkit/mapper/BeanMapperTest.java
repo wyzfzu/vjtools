@@ -1,8 +1,9 @@
-package com.vip.vjtools.vjkit.reflect;
+package com.vip.vjtools.vjkit.mapper;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -58,15 +59,28 @@ public class BeanMapperTest {
 
 	}
 
+	@Test
+	public void copy2Map() {
+		Teacher teacher = new Teacher("zhang");
+		Map map = BeanMapper.map(teacher, Map.class);
+		assertThat(map).containsKeys("name").containsValues("zhang");
+
+		Student student = new Student("zhang3", 20, new Teacher("li4"), ListUtil.newArrayList("chinese", "english"));
+		Map mapStu = BeanMapper.map(student, Map.class);
+		assertThat(mapStu.containsKey("teacher"));
+		assertThat(mapStu.get("teacher")).hasFieldOrProperty("name");
+	}
+
 	public static class Student {
 		public String name;
 		private int age;
 		private Teacher teacher;
 		private List<String> course = ListUtil.newArrayList();
 
-		public Student(){
-			
+		public Student() {
+
 		}
+
 		public Student(String name, int age, Teacher teacher, List<String> course) {
 			this.name = name;
 			this.age = age;
@@ -97,24 +111,25 @@ public class BeanMapperTest {
 		public void setTeacher(Teacher teacher) {
 			this.teacher = teacher;
 		}
+
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
-		
-		
+
 
 	}
 
 	public static class Teacher {
 		private String name;
 
-		public Teacher(){
-			
+		public Teacher() {
+
 		}
-		
+
 		public Teacher(String name) {
 			super();
 			this.name = name;
@@ -136,9 +151,10 @@ public class BeanMapperTest {
 		private TeacherVO teacher;
 		private List<String> course = ListUtil.newArrayList();
 
-		public StudentVO(){
-			
+		public StudentVO() {
+
 		}
+
 		public StudentVO(String name, int age, TeacherVO teacher, List<String> course) {
 			this.name = name;
 			this.age = age;
@@ -169,9 +185,11 @@ public class BeanMapperTest {
 		public void setTeacher(TeacherVO teacher) {
 			this.teacher = teacher;
 		}
+
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
@@ -180,10 +198,10 @@ public class BeanMapperTest {
 	public static class TeacherVO {
 		private String name;
 
-		public TeacherVO(){
-			
+		public TeacherVO() {
+
 		}
-		
+
 		public TeacherVO(String name) {
 			super();
 			this.name = name;

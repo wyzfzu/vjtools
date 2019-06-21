@@ -96,6 +96,8 @@ Tcp, Xml等缩写也遵循驼峰形式，可约定例外如：DTO/ VO等。
 private static final Logger logger = Logger.getLogger(MyClass.class);
 ```
 
+例外：枚举常量推荐全大写，但如果历史原因未遵循也是允许的，所以我们修改了Sonar的规则。
+
 * [Sonar-115:Constant names should comply with a naming convention](https://www.sonarsource.com/products/codeanalyzers/sonarjava/rules.html#RSPEC-115) 
 * [Sonar-308:Static non-final field names should comply with a naming convention](https://www.sonarsource.com/products/codeanalyzers/sonarjava/rules.html#RSPEC-308)
 
@@ -133,7 +135,9 @@ private static final Logger logger = Logger.getLogger(MyClass.class);
 
 **Rule 12. 【强制】POJO类中布尔类型的变量名，不要加is前缀，否则部分框架解析会引起序列化错误**
 
+```text
 反例：Boolean isSuccess的成员变量，它的GET方法也是isSuccess()，部分框架在反射解析的时候，“以为”对应的成员变量名称是success，导致出错。
+```
 
 ----
 

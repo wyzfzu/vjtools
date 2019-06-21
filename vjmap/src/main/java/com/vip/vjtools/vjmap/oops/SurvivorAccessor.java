@@ -26,12 +26,13 @@ import sun.jvm.hotspot.oops.UnknownOopException;
  */
 public class SurvivorAccessor {
 
-	public List<ClassStats> dump(int minAge) {
-		HashMap<Klass, ClassStats> classStatsMap = new HashMap<Klass, ClassStats>(2048, 0.2f);
+	private PrintStream tty = System.out;
+
+	public List<ClassStats> caculateHistogram(int excactAge, int minAge) {
+		HashMap<Klass, ClassStats> classStatsMap = new HashMap<>(2048, 0.2f);
 		CollectedHeap heap = HeapUtils.getHeap();
 		ObjectHeap objectHeap = HeapUtils.getObjectHeap();
-		PrintStream tty = System.err;
-		
+
 		// 获取Survivor区边界
 		Address fromBottom = null;
 		Address fromTop = null;
@@ -60,7 +61,7 @@ public class SurvivorAccessor {
 		// 记录分年龄统计
 		long[] ageSize = new long[50];
 		int[] ageCount = new int[50];
-		int maxAge = minAge;
+		int maxAge = 1;
 
 		// 遍历Survivor区
 		OopHandle handle = fromBottom.addOffsetToAsOopHandle(0);
@@ -95,7 +96,13 @@ public class SurvivorAccessor {
 				maxAge = age;
 			}
 
-			if (age < minAge) {
+			// 如果设定了精确匹配age
+			if (excactAge != -1) {
+				if (age != excactAge) {
+					continue;
+				}
+			} else if (age < minAge) {
+				// 否则判断age>=minAge
 				continue;
 			}
 
@@ -107,7 +114,7 @@ public class SurvivorAccessor {
 		tty.printf("%n#age    #count  #bytes%n");
 
 		for (int i = 1; i <= maxAge; i++) {
-			tty.printf("%3d: %9d %7s%n",i,ageCount[i],FormatUtils.toFloatUnit(ageSize[i]));
+			tty.printf("%3d: %9d %7s%n", i, ageCount[i], FormatUtils.toFloatUnit(ageSize[i]));
 		}
 
 		return HeapUtils.getClassStatsList(classStatsMap);
